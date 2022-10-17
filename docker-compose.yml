@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    image: nginx:1.23-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - wordpress
+
+  wordpress:
+    image: wordpress:6.0.2-fpm-alpine
+    hostname: wordpress
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=mysql
+      - WORPRESS_DB_USER=$MYSQL_USER
+      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - WORPRESS_DB_NAME=wordpress
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0.31
+    command: --default-authentication-plugin=mysql_native_password
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+    volumes:
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+volumes:
+  mysqldata:
