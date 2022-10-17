@@ -16,7 +16,10 @@ server_name yourdomain.com;
 
 $ mv env-example .env
 
-4. Iniciar o projeto:
+4. Em 'src/wp-config.php', substituir 'example username' (linha 47) pelo usuário
+   do banco de dados.
+
+5. Iniciar o projeto:
 
 $ docker compose up
 
