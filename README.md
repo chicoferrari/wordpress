@@ -7,7 +7,8 @@ Instruções:
 
 127.0.0.1 yourdomain.com
 
-2. Editar a linha 5 arquivo '.docker/nginx/conf.d/wordpress.conf' com o nome do domínio que será utilizado:
+2. Editar a linha 5 arquivo '.docker/nginx/conf.d/wordpress.conf' com o nome 
+   do domínio que será utilizado:
 
 server_name yourdomain.com;
 
